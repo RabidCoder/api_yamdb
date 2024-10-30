@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 
-from reviews.models import Category, Genre, Title, Title_Genre
+from reviews.models import Category, Genre, Title
 
-DATA = (Category, Genre, Title, Title_Genre)
+DATA = (Category, Genre, Title)
 
 
 class Command(BaseCommand):
