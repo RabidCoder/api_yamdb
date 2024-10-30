@@ -28,11 +28,11 @@ class TitleSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'year', 'description', 'genre', 'category')
         read_only_fields = ('description',)
 
-    def create(self, validated_data):
-        pass
+    # def create(self, validated_data):
+    #     pass
 
-    def update(self, instance, validated_data):
-        pass
+    # def update(self, instance, validated_data):
+    #     pass
 
     def validate_year(self, value):
         if value < MIN_YEAR or value > current_year():

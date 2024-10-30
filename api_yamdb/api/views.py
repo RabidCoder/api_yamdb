@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions
 
+from api.filters import TitleFilter
 from api.mixins import ListCreateDestroyViewSet
 from api.permissions import AdminOrReadOnly
 from api.serializers import (
@@ -25,4 +26,4 @@ class TitleViewSet(viewsets.ModelViewSet):
     # permission_classes = (AdminOrReadOnly,)
     permission_classes = (permissions.AllowAny,)
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category__slug', 'genre__slug', 'name', 'year')
+    filterset_class = TitleFilter
