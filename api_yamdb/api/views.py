@@ -1,11 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 
 from api.filters import TitleFilter
 from api.mixins import ListCreateDestroyViewSet
 from api.permissions import AdminOrReadOnly
 from api.serializers import (
-    CategorySerializer, GenreSerializer, TitleSerializer
+    CategorySerializer,
+    GenreSerializer,
+    ReadTitleSerializer,
+    WriteTitleSerializer
 )
 from reviews.models import Category, Genre, Title
 
@@ -22,8 +25,11 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
-    serializer_class = TitleSerializer
-    # permission_classes = (AdminOrReadOnly,)
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (AdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
+
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return ReadTitleSerializer
+        return WriteTitleSerializer
