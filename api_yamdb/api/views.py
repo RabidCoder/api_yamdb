@@ -1,8 +1,10 @@
 from rest_framework import viewsets
 
 from api.mixins import ListCreateDestroyViewSet
-from api.serializers import CategorySerializer, GenreSerializer
-from reviews.models import Category, Genre
+from api.serializers import (
+    CategorySerializer, GenreSerializer, TitleSerializer
+)
+from reviews.models import Category, Genre, Title
 
 
 class CategoryViewSet(ListCreateDestroyViewSet):
@@ -16,4 +18,5 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    pass
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
