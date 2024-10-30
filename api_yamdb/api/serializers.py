@@ -4,6 +4,7 @@ from reviews.models import Category, Genre, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Serializer related to Category model."""
 
     class Meta:
         model = Category
@@ -12,6 +13,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class GenreSerializer(serializers.ModelSerializer):
+    """Serializer related to Genre model."""
 
     class Meta:
         model = Genre
@@ -19,9 +21,30 @@ class GenreSerializer(serializers.ModelSerializer):
         lookup_field = 'slug'
 
 
-class TitleSerializer(serializers.ModelSerializer):
-    genre = GenreSerializer(read_only=True, many=True)
-    category = CategorySerializer(read_only=True)
+class ReadTitleSerializer(serializers.ModelSerializer):
+    """Serializer related to Title model read purpose."""
+
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
+
+    class Meta:
+        model = Title
+        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
+        read_only_fields = ('description',)
+
+
+class WriteTitleSerializer(serializers.ModelSerializer):
+    """Serializer related to Title model write purpose."""
+
+    genre = serializers.SlugRelatedField(
+        queryset=Genre.objects.all(),
+        slug_field='slug',
+        many=True
+    )
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(),
+        slug_field='slug'
+    )
 
     class Meta:
         model = Title

@@ -1,15 +1,18 @@
 from django.contrib import admin
 
-from .models import Category, Genre, Title
+from reviews.models import Category, Genre, Title
 
 
 class GenreInline(admin.TabularInline):
+    """Class shows inline genres while administering titles."""
+
     model = Title.genre.through
     extra = 0
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    """Category administering customization form."""
 
     list_display = (
         'name',
@@ -27,6 +30,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
+    """Genre administering customization form."""
 
     list_display = (
         'name',
@@ -44,6 +48,8 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
+    """Title administering customization form."""
+
     inlines = (GenreInline,)
     list_display = (
         'name',
