@@ -25,3 +25,11 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = (AdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category__slug', 'genre__slug', 'name', 'year')
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    pass
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    pass
