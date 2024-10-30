@@ -4,13 +4,18 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
+NAME_MAX_LENGTH = 256
+SLUG_MAX_LENGTH = 50
+MIN_YEAR = -20000
+
+
 def current_year():
     return datetime.date.today().year
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField(max_length=NAME_MAX_LENGTH)
+    slug = models.SlugField(max_length=SLUG_MAX_LENGTH, unique=True)
 
     class Meta:
         ordering = ['slug', 'name']
@@ -20,8 +25,8 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField(max_length=NAME_MAX_LENGTH)
+    slug = models.SlugField(max_length=SLUG_MAX_LENGTH, unique=True)
 
     class Meta:
         ordering = ['slug', 'name']
@@ -31,11 +36,11 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=NAME_MAX_LENGTH)
     year = models.IntegerField(
         validators=[
             MaxValueValidator(current_year()),
-            MinValueValidator(-20000)
+            MinValueValidator(MIN_YEAR)
         ]
     )
     description = models.TextField(blank=True, null=True)
