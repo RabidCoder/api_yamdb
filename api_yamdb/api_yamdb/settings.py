@@ -99,6 +99,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+PAGINATION_ITEMS_PER_PAGE = 10
+
 
 # Static files (CSS, JavaScript, Images)
 
@@ -108,5 +110,5 @@ STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': PAGINATION_ITEMS_PER_PAGE,
 }

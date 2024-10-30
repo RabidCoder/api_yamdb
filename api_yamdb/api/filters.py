@@ -4,6 +4,8 @@ from reviews.models import Title
 
 
 class TitleFilter(django_filters.FilterSet):
+    """Filter class related to Title model."""
+
     name = django_filters.CharFilter(
         field_name='name',
         lookup_expr='icontains'

@@ -10,10 +10,13 @@ MIN_YEAR = -20000
 
 
 def current_year():
+    """Returns current year."""
     return datetime.date.today().year
 
 
 class Category(models.Model):
+    """Model related to categories."""
+
     name = models.CharField(max_length=NAME_MAX_LENGTH)
     slug = models.SlugField(max_length=SLUG_MAX_LENGTH, unique=True)
 
@@ -25,6 +28,8 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
+    """Model related to genres."""
+
     name = models.CharField(max_length=NAME_MAX_LENGTH)
     slug = models.SlugField(max_length=SLUG_MAX_LENGTH, unique=True)
 
@@ -36,6 +41,8 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
+    """Model related to titles."""
+
     name = models.CharField(max_length=NAME_MAX_LENGTH)
     year = models.IntegerField(
         validators=[
