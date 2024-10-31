@@ -46,3 +46,13 @@ class TitleViewSet(viewsets.ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return ReadTitleSerializer
         return WriteTitleSerializer
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    """Viewset class related to Comments."""
+    pass
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    """Viewset class related to Reviews."""
+    pass
