@@ -1,16 +1,24 @@
 from django.core.management.base import BaseCommand
+from sqlalchemy import create_engine, text
 
-from reviews.models import Category, Genre, Title
 
-DATA = (Category, Genre, Title)
+DB = 'sqlite:///db.sqlite3'
+
+TABLES = (
+    'reviews_category',
+    'reviews_genre',
+    'reviews_title',
+    'reviews_title_genre',
+)
 
 
 class Command(BaseCommand):
-    help = 'Clears tables in a database.'
+    help = 'Clears sqlite tables.'
 
     def handle(self, *args, **options):
-        for table in DATA:
-            records = table.objects.all()
-            records.delete()
-            print(f'{table} flush complete!')
-        print('Done!')
+        engine = create_engine(DB)
+        for table_name in TABLES:
+            with engine.begin() as conn:
+                conn.execute(text(f'DELETE FROM {table_name}'))
+            print(f'Table {table_name}: flush complete!')
+        print('================================================\nDone!')

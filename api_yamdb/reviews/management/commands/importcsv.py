@@ -3,6 +3,8 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 
+DB = 'sqlite:///db.sqlite3'
+
 DIR = 'static/data/'
 
 DATA = {
@@ -14,12 +16,12 @@ DATA = {
 
 
 class Command(BaseCommand):
-    help = 'Imports data from CSV file into the sqlite table.'
+    help = 'Imports data from CSV files into sqlite tables.'
 
     def handle(self, *args, **options):
-        engine = create_engine('sqlite:///db.sqlite3')
+        engine = create_engine(DB)
         for table_name, csv_name in DATA.items():
             df = pd.read_csv(f'{DIR}{csv_name}')
-            df.to_sql(table_name, engine, index=False, if_exists='replace')
-            print(f'Table {table_name} complete!')
-        print('Done!')
+            df.to_sql(table_name, engine, index=False, if_exists='append')
+            print(f'Table {table_name}: data import complete!')
+        print('================================================\nDone!')
