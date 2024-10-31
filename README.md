@@ -70,3 +70,12 @@ api-requests.http
 ```
 postman_collection/
 ```
+
+### Как загрузить тестовые данные в базу данных проекта:
+```
+python3 importcsv.py
+```
+### Как очистить базу данных проекта от тестовых данных:
+```
+python3 cleardb.py
+```
