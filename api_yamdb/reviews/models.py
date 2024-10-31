@@ -3,10 +3,14 @@ import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from users.models import CustomUser
+
 
 NAME_MAX_LENGTH = 256
 SLUG_MAX_LENGTH = 50
 MIN_YEAR = -20000
+MIN_SCORE = 1
+MAX_SCORE = 10
 
 
 def current_year():
@@ -69,3 +73,56 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Review(models.Model):
+    """Model related to reviews."""
+
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE, related_name='reviews'
+    )
+    author = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name='reviews'
+    )
+    text = models.TextField()
+    score = models.IntegerField(
+        validators=[
+            MaxValueValidator(MAX_SCORE),
+            MinValueValidator(MIN_SCORE)
+        ]
+    )
+    pub_date = models.DateTimeField(
+        'Publication Date', auto_now_add=True, db_index=True
+    )
+
+    class Meta:
+        ordering = ['-pub_date']
+        unique_together = ['title', 'author']
+        verbose_name = 'review'
+        verbose_name_plural = 'Reviews'
+    
+    def __str__(self):
+        return f'Review by {self.author} on {self.title}'
+
+
+class Comment(models.Model):
+    """Model related to comments."""
+
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE, related_name='comments'
+    )
+    author = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name='comments'
+    )
+    text = models.TextField()
+    pub_date = models.DateTimeField(
+        'Publication Date', auto_now_add=True, db_index=True
+    )
+
+    class Meta:
+        ordering = ['-pub_date']
+        verbose_name = 'comment'
+        verbose_name_plural = 'Comments'
+    
+    def __str__(self):
+        return f'Comment by {self.author} on review {self.review}'
