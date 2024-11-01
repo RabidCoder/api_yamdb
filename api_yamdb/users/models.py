@@ -3,6 +3,7 @@ from django.db import models
 
 from .constants import CONFIRMATION_CODE_LENGTH, MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH, ROLE_CHOICE
 
+
 class CustomUser(AbstractUser):
     username = models.CharField(
         max_length = MAX_USERNAME_LENGTH,
@@ -19,7 +20,7 @@ class CustomUser(AbstractUser):
         max_length=15,
         choices=ROLE_CHOICE,
         default=ROLE_CHOICE[0]
-        )
+    )
     confirmation_code = models.CharField(
         verbose_name='Проверочный код',
         blank=True,
@@ -27,7 +28,8 @@ class CustomUser(AbstractUser):
     )
     bio = models.TextField(
         blank=True,
-        verbose_name='Информация о пользователе'
+        verbose_name='Информация о пользователе',
+        null=True
     )
     # password = models.CharField(blank=True, max_length=128)
     # is_superuser = models.BooleanField(blank=True, default=False)
