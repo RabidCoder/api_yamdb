@@ -15,6 +15,8 @@ def signup(request):
             'Для регистрации пользователя надо использовать метод "POST"',
             status=HTTP_400_BAD_REQUEST
         )
+    username = request.data.get('username')
+
 
 
 def get_token(request):
