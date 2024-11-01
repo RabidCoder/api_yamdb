@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from .constants import BAD_USER_NAMES
 from .serializers import SignUpSerializers
+from .utils import send_confirmation_code_to_email
 
 User=get_user_model()
 
@@ -19,7 +20,7 @@ def signup(request):
     email = request.data.get('email')
     if not username or not email:
         return Response(
-            {'error': 'Проверьте, что в запросе присутствуют параметры username и email.'},
+            {'email': 'email'},
             status=status.HTTP_400_BAD_REQUEST
         )
     if username in BAD_USER_NAMES:
@@ -29,19 +30,23 @@ def signup(request):
     )
     if not User.objects.filter(username=username).exists():
         serializer = SignUpSerializers(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             send_confirmation_code_to_email(username)
             return Response(serializer.data, status=status.HTTP_200_OK)
+
     user = get_object_or_404(User, username=username)
+    serializer = SignUpSerializers(user, data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        if user.email != serializer.validated_data['email']:
+            return Response(
+                {'error': f'Для пользователя {username} указана неправильная почта'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer.save()
+        send_confirmation_code_to_email(username)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-    # if request.method != 'POST':
-    #     return Response(
-    #         {'message': 'Для регистрации пользователя надо использовать метод "POST"'},
-    #         status=HTTP_400_BAD_REQUEST
-    #     )
-    #
 
 
 

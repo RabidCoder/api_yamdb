@@ -7,3 +7,4 @@ class SignUpSerializers(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'username')
+

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 
-from constants import CONFIRMATION_CODE_LENGTH
+from .constants import CONFIRMATION_CODE_LENGTH
 
 User = get_user_model()
 

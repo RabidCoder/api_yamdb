@@ -1,13 +1,18 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .constants import CONFIRMATION_CODE_LENGTH, ROLE_CHOICE
+from .constants import CONFIRMATION_CODE_LENGTH, MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH, ROLE_CHOICE
 
 class CustomUser(AbstractUser):
+    username = models.CharField(
+        max_length = MAX_USERNAME_LENGTH,
+        unique = True,
+    )
     email = models.EmailField(
         verbose_name='E-mail',
-        max_length=254,
-        unique=True
+        max_length=MAX_EMAIL_LENGTH,
+        unique=True,
+        blank=False
     )
     role = models.CharField(
         verbose_name='Роль',
@@ -20,12 +25,23 @@ class CustomUser(AbstractUser):
         blank=True,
         max_length=CONFIRMATION_CODE_LENGTH
     )
+    bio = models.TextField(
+        blank=True,
+        verbose_name='Информация о пользователе'
+    )
+    # password = models.CharField(blank=True, max_length=128)
+    # is_superuser = models.BooleanField(blank=True, default=False)
+    # is_staff = models.BooleanField(blank=True, default=False)
+    # is_active = models.BooleanField(blank=True, default=True,)
+    # date_joined = models.DateTimeField(blank=True)
 
     class Meta:
         verbose_name = 'пользователь'
         verbose_name_plural = 'Пользователи'
 
-
     def __str__(self):
         return self.username
+
+    def isAdmin(self):
+        return self.role == 'admin'
 
