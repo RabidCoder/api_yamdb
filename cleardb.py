@@ -10,7 +10,9 @@ TABLES = (
     'reviews_title_genre',
     'reviews_comment',
     'reviews_review',
-    'users_customuser'
+    'users_customuser',
+    'users_customuser_groups',
+    'users_customuser_user_permissions'
 )
 
 
