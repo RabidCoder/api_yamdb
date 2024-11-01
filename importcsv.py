@@ -11,6 +11,9 @@ DATA = {
     'reviews_genre': 'genre.csv',
     'reviews_title': 'titles.csv',
     'reviews_title_genre': 'genre_title.csv',
+    'reviews_comment': 'comments.csv',
+    'reviews_review': 'review.csv',
+    'users_customuser': 'users.csv',
 }
 
 

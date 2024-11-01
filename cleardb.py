@@ -8,6 +8,9 @@ TABLES = (
     'reviews_genre',
     'reviews_title',
     'reviews_title_genre',
+    'reviews_comment',
+    'reviews_review',
+    'users_customuser'
 )
 
 
