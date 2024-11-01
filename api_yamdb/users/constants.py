@@ -3,6 +3,6 @@ ROLE_CHOICE = [('user', 'Пользователь'),
                ('admin', 'Администратор')
                ]
 
-BAD_USER_NAME = ['me']
+BAD_USER_NAMES = 'me'
 
 CONFIRMATION_CODE_LENGTH = 6
