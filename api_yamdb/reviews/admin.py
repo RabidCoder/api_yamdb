@@ -9,7 +9,6 @@ class BaseAdmin(admin.ModelAdmin):
     empty_value_display = '-empty-'
     list_display_links = ('name',)
     list_display = ('name', 'slug')
-    list_editable = ('slug',)
     search_fields = ('name', 'slug')
 
 
@@ -52,14 +51,14 @@ class ReviewInline(admin.TabularInline):
 class CategoryAdmin(BaseAdmin):
     """Admin settings for Category model."""
 
-    pass
+    list_editable = ('slug',)
 
 
 @admin.register(Genre)
 class GenreAdmin(BaseAdmin):
     """Admin settings for Genre model."""
 
-    pass
+    list_editable = ('slug',)
 
 
 @admin.register(Title)
