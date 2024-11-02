@@ -1,6 +1,8 @@
 import datetime
 
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (
+    MaxValueValidator, MinValueValidator, MaxLengthValidator
+)
 from django.db import models
 
 from users.models import CustomUser
@@ -26,6 +28,8 @@ class Category(models.Model):
 
     class Meta:
         ordering = ['slug', 'name']
+        verbose_name = 'category'
+        verbose_name_plural = 'Categories'
 
     def __str__(self):
         return self.name
@@ -39,6 +43,8 @@ class Genre(models.Model):
 
     class Meta:
         ordering = ['slug', 'name']
+        verbose_name = 'genre'
+        verbose_name_plural = 'Genres'
 
     def __str__(self):
         return self.name
@@ -50,22 +56,19 @@ class Title(models.Model):
     name = models.CharField(max_length=NAME_MAX_LENGTH)
     year = models.IntegerField(
         validators=[
-            MaxValueValidator(current_year()),
+            MaxValueValidator(
+                current_year(), message='Year cannot be in the future.'
+            ),
             MinValueValidator(MIN_YEAR)
         ]
     )
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(
-        Genre,
-        blank=True,
-        related_name='titles'
+        Genre, blank=True, related_name='titles'
     )
     category = models.ForeignKey(
-        Category,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        related_name='titles'
+        Category, on_delete=models.SET_NULL, blank=True,
+        null=True, related_name='titles'
     )
 
     class Meta:
@@ -90,12 +93,9 @@ class Review(models.Model):
     author = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='reviews'
     )
-    text = models.TextField()
+    text = models.TextField(validators=[MaxLengthValidator(500)])
     score = models.IntegerField(
-        validators=[
-            MaxValueValidator(MAX_SCORE),
-            MinValueValidator(MIN_SCORE)
-        ]
+        validators=[MaxValueValidator(MAX_SCORE), MinValueValidator(MIN_SCORE)]
     )
     pub_date = models.DateTimeField(
         'Publication Date', auto_now_add=True, db_index=True
@@ -120,7 +120,7 @@ class Comment(models.Model):
     author = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='comments'
     )
-    text = models.TextField()
+    text = models.TextField(validators=[MaxLengthValidator(500)])
     pub_date = models.DateTimeField(
         'Publication Date', auto_now_add=True, db_index=True
     )
@@ -131,4 +131,7 @@ class Comment(models.Model):
         verbose_name_plural = 'Comments'
 
     def __str__(self):
-        return f'Comment by {self.author} on review {self.review}'
+        return (
+            f'Comment by {self.author} on review {self.review}: '
+            f'{self.text[:20]}...'
+        )

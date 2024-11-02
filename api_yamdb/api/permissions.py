@@ -12,3 +12,21 @@ class AdminOrReadOnly(permissions.BasePermission):
             request.method in permissions.SAFE_METHODS
             or request.user.role == 'admin'
         )
+
+
+class AuthorOrReadOnly(permissions.BasePermission):
+    """Permission class to restrict content modification and deletion."""
+
+    def has_permission(self, request, view):
+        """Allow read permissions for unauthenticated users."""
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        """Allow modification and deletion for the author,
+        moderators, and admins."""
+        return (
+            request.method in permissions.SAFE_METHODS
+            or request.user.role in ('moderator', 'admin', 'author')
+        )
