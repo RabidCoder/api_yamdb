@@ -23,7 +23,7 @@ def current_year():
 class Category(models.Model):
     """Model related to categories."""
 
-    name = models.CharField(max_length=NAME_MAX_LENGTH)
+    name = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
     slug = models.SlugField(max_length=SLUG_MAX_LENGTH, unique=True)
 
     class Meta:
@@ -38,7 +38,7 @@ class Category(models.Model):
 class Genre(models.Model):
     """Model related to genres."""
 
-    name = models.CharField(max_length=NAME_MAX_LENGTH)
+    name = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
     slug = models.SlugField(max_length=SLUG_MAX_LENGTH, unique=True)
 
     class Meta:
@@ -73,8 +73,12 @@ class Title(models.Model):
 
     class Meta:
         ordering = ['-year', 'category', 'name']
-        verbose_name = 'title'
-        verbose_name_plural = 'Titles'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'year', 'category'],
+                name='unique_title_properties'
+            ),
+        ]
 
     def __str__(self):
         return self.name

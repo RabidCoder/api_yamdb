@@ -1,5 +1,5 @@
 from django.db.models import Avg
-from rest_framework import serializers
+from rest_framework import serializers, validators
 
 from reviews.models import Category, Comment, Genre, Review, Title
 
@@ -55,7 +55,13 @@ class WriteTitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
+        fields = ('name', 'year', 'description', 'genre', 'category')
+        validators = [
+            validators.UniqueTogetherValidator(
+                queryset=Title.objects.all(),
+                fields=('name', 'year', 'category')
+            )
+        ]
 
 
 class CommentSerializer(serializers.ModelSerializer):
