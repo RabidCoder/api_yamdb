@@ -73,6 +73,8 @@ class Title(models.Model):
 
     class Meta:
         ordering = ['-year', 'category', 'name']
+        verbose_name = 'title'
+        verbose_name_plural = 'Titles'
         constraints = [
             models.UniqueConstraint(
                 fields=['name', 'year', 'category'],
