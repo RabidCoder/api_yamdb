@@ -55,7 +55,6 @@ class WriteTitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-
         fields = ('name', 'year', 'description', 'genre', 'category')
         validators = [
             validators.UniqueTogetherValidator(
