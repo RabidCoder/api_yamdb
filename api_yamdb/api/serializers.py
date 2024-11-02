@@ -55,7 +55,7 @@ class WriteTitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('name', 'year', 'description', 'genre', 'category')
+        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
         validators = [
             validators.UniqueTogetherValidator(
                 queryset=Title.objects.all(),
