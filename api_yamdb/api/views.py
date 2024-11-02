@@ -1,11 +1,9 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 
 from api.filters import TitleFilter
-from api.mixins import ListCreateDestroyViewSet
-from api.permissions import AdminOrReadOnly, AuthorOrReadOnly
+from api.mixins import NoUpdateMixin, PatchOnlyMixin
 from api.serializers import (
     CategorySerializer,
     CommentSerializer,
@@ -17,7 +15,7 @@ from api.serializers import (
 from reviews.models import Category, Genre, Review, Title
 
 
-class CategoryViewSet(ListCreateDestroyViewSet):
+class CategoryViewSet(NoUpdateMixin):
     """
     Viewset class related to Categories.
     Inherits from api.mixins.ListCreateDestroyViewSet.
@@ -27,7 +25,7 @@ class CategoryViewSet(ListCreateDestroyViewSet):
     serializer_class = CategorySerializer
 
 
-class GenreViewSet(ListCreateDestroyViewSet):
+class GenreViewSet(NoUpdateMixin):
     """
     Viewset class related to Genres.
     Inherits from api.mixins.ListCreateDestroyViewSet.
@@ -37,11 +35,10 @@ class GenreViewSet(ListCreateDestroyViewSet):
     serializer_class = GenreSerializer
 
 
-class TitleViewSet(viewsets.ModelViewSet):
+class TitleViewSet(PatchOnlyMixin):
     """Viewset class related to Titles."""
 
     queryset = Title.objects.all()
-    permission_classes = (AdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
 
@@ -52,11 +49,10 @@ class TitleViewSet(viewsets.ModelViewSet):
         return WriteTitleSerializer
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(PatchOnlyMixin):
     """Viewset class related to Comments."""
 
     serializer_class = CommentSerializer
-    permission_classes = (AuthorOrReadOnly,)
 
     def get_review(self):
         return get_object_or_404(Review, id=self.kwargs.get('review_id'))
@@ -70,11 +66,10 @@ class CommentViewSet(viewsets.ModelViewSet):
         return review.comments.all()
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(PatchOnlyMixin):
     """Viewset class related to Reviews."""
 
     serializer_class = ReviewSerializer
-    permission_classes = (AuthorOrReadOnly,)
 
     def get_title(self):
         return get_object_or_404(Title, id=self.kwargs.get('title_id'))
