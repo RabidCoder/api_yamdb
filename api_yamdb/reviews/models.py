@@ -21,7 +21,7 @@ def current_year():
 class Category(models.Model):
     """Model related to categories."""
 
-    name = models.CharField(max_length=NAME_MAX_LENGTH)
+    name = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
     slug = models.SlugField(max_length=SLUG_MAX_LENGTH, unique=True)
 
     class Meta:
@@ -34,7 +34,7 @@ class Category(models.Model):
 class Genre(models.Model):
     """Model related to genres."""
 
-    name = models.CharField(max_length=NAME_MAX_LENGTH)
+    name = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
     slug = models.SlugField(max_length=SLUG_MAX_LENGTH, unique=True)
 
     class Meta:
@@ -70,6 +70,12 @@ class Title(models.Model):
 
     class Meta:
         ordering = ['-year', 'category', 'name']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'year', 'category'],
+                name='unique_title_properties'
+            ),
+        ]
 
     def __str__(self):
         return self.name
@@ -100,7 +106,7 @@ class Review(models.Model):
         unique_together = ['title', 'author']
         verbose_name = 'review'
         verbose_name_plural = 'Reviews'
-    
+
     def __str__(self):
         return f'Review by {self.author} on {self.title}'
 
@@ -123,6 +129,6 @@ class Comment(models.Model):
         ordering = ['-pub_date']
         verbose_name = 'comment'
         verbose_name_plural = 'Comments'
-    
+
     def __str__(self):
         return f'Comment by {self.author} on review {self.review}'
