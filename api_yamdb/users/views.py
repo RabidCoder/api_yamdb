@@ -1,31 +1,41 @@
+from re import fullmatch
+
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import AccessToken
 
-from .constants import BAD_USER_NAMES
-from .serializers import SignUpSerializers
+from .constants import BAD_USERNAMES, USERNAME_PATTERN
+from .serializers import SignUpSerializers, GetTokenSerializers
 from .utils import send_confirmation_code_to_email
 
 User=get_user_model()
 
-def profile(request):
-    return HttpResponse('<h1>Профиль пользователя</h1>')
 
 @api_view(['POST'])
 def signup(request):
+    serializer = GetTokenSerializers(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    user = get_object_or_404(User, username=serializer.validated_data['username'])
+    #####
+    Начать с этого
+    #####
     username = request.data.get('username')
     email = request.data.get('email')
-    if not username or not email:
+    answer = {}
+    if not username:
+        answer['username'] = ['Обязательное поле']
+    if not email:
+        answer['email'] = ['Обязательное поле']
+    if answer:
+        return Response(answer, status=status.HTTP_400_BAD_REQUEST)
+    if username in BAD_USERNAMES or not fullmatch(USERNAME_PATTERN, username):
         return Response(
-            {'email': 'email'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    if username in BAD_USER_NAMES:
-        return Response(
-            {'error': f'Имя пользователя: {username} - не допустимо.'},
+            {'username': [f'Неправильное имя пользователя: {username}'],
+             'email': [f'или формат почтового адреса: {email}']},
             status=status.HTTP_400_BAD_REQUEST
     )
     if not User.objects.filter(username=username).exists():
@@ -48,7 +58,26 @@ def signup(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-
+@api_view(['POST'])
 def get_token(request):
-    pass
+    serializer = GetTokenSerializers(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    user = get_object_or_404(User, username=serializer.validated_data['username'])
+    confirmation_code = serializer.validated_data['confirmation_code']
+    if user.confirmation_code == confirmation_code:
+        return Response(
+            {'token': str(AccessToken.for_user(user))},
+            status=status.HTTP_200_OK
+        )
+    return Response(
+        {'confirmation_code': [f'Проверочный код указан неправильно']},
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+
+def blank_url(request):
+    return HttpResponse('<h1>Заглушка</h1>')
+
+
+def profile(request):
+    return HttpResponse('<h1>Профиль пользователя</h1>')
