@@ -2,7 +2,7 @@
 #                ('moderator', 'Модератор'),
 #                ('admin', 'Администратор')
 #                ]
-USER = 'User'
+USER = 'user'
 MODERATOR = 'moderator'
 ADMIN = 'admin'
 

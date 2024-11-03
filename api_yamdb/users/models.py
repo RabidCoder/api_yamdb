@@ -34,21 +34,23 @@ class CustomUser(AbstractUser):
     bio = models.TextField(
         blank=True,
         verbose_name='Информация о пользователе',
-        null=True
+        default=''
     )
-    # password = models.CharField(blank=True, max_length=128)
-    # is_superuser = models.BooleanField(blank=True, default=False)
-    # is_staff = models.BooleanField(blank=True, default=False)
-    # is_active = models.BooleanField(blank=True, default=True,)
-    # date_joined = models.DateTimeField(blank=True)
+
 
     class Meta:
         verbose_name = 'пользователь'
         verbose_name_plural = 'Пользователи'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('username', 'email'),
+                name='unique_username_email'
+            ),
+        )
 
     def __str__(self):
         return self.username
 
-    def isAdmin(self):
+    def is_admin(self):
         return self.role == 'admin'
 

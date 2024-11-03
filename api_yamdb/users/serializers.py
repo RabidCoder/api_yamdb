@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from .constants import (BAD_USERNAMES, CONFIRMATION_CODE_LENGTH,
                         MAX_USERNAME_LENGTH, USERNAME_PATTERN)
-from .permissions import IsAdminOrStaff
+from .permissions import IsAdmin
 
 User = get_user_model()
 
@@ -33,7 +33,7 @@ class GetTokenSerializers(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    permission_classes = (IsAdminOrStaff,)
+    permission_classes = (IsAdmin,)
 
     class Meta:
         model = User
