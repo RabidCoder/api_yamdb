@@ -1,7 +1,10 @@
-ROLE_CHOICE = [('user', 'Пользователь'),
-               ('moderator', 'Модератор'),
-               ('admin', 'Администратор')
-               ]
+# ROLE_CHOICE = [('user', 'Пользователь'),
+#                ('moderator', 'Модератор'),
+#                ('admin', 'Администратор')
+#                ]
+USER = 'User'
+MODERATOR = 'moderator'
+ADMIN = 'admin'
 
 USERNAME_PATTERN = r'^[\w.@+-]+\Z'
 BAD_USERNAMES = ['me']

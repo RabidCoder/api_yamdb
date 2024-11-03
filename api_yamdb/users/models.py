@@ -1,8 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .constants import CONFIRMATION_CODE_LENGTH, MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH, ROLE_CHOICE
-
+from .constants import (USER, MODERATOR, ADMIN,
+    CONFIRMATION_CODE_LENGTH, MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
+)
+ROLE_CHOICE = [(USER, 'Пользователь'),
+               (MODERATOR, 'Модератор'),
+               (ADMIN, 'Администратор')
+               ]
 
 class CustomUser(AbstractUser):
     username = models.CharField(
@@ -19,7 +24,7 @@ class CustomUser(AbstractUser):
         verbose_name='Роль',
         max_length=15,
         choices=ROLE_CHOICE,
-        default=ROLE_CHOICE[0]
+        default=USER
     )
     confirmation_code = models.CharField(
         verbose_name='Проверочный код',

@@ -39,3 +39,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'email', 'first_name',
                   'last_name', 'bio', 'role')
+
+    def validate_username(self, value):
+        if value in BAD_USERNAMES or not fullmatch(USERNAME_PATTERN, value):
+            raise serializers.ValidationError('Неправильное имя пользователя')
+        return value
