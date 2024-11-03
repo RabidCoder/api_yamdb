@@ -1,15 +1,13 @@
-from re import fullmatch
-
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework import status, viewsets
+from rest_framework.decorators import action, api_view
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .constants import BAD_USERNAMES, USERNAME_PATTERN
-from .serializers import SignUpSerializers, GetTokenSerializers
+from .serializers import SignUpSerializers, GetTokenSerializers, UserSerializer
 from .utils import send_confirmation_code_to_email
 
 User=get_user_model()
@@ -17,45 +15,23 @@ User=get_user_model()
 
 @api_view(['POST'])
 def signup(request):
-    serializer = GetTokenSerializers(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    user = get_object_or_404(User, username=serializer.validated_data['username'])
-    #####
-    Начать с этого
-    #####
+    serializer = SignUpSerializers(data=request.data)
     username = request.data.get('username')
-    email = request.data.get('email')
-    answer = {}
-    if not username:
-        answer['username'] = ['Обязательное поле']
-    if not email:
-        answer['email'] = ['Обязательное поле']
-    if answer:
-        return Response(answer, status=status.HTTP_400_BAD_REQUEST)
-    if username in BAD_USERNAMES or not fullmatch(USERNAME_PATTERN, username):
-        return Response(
-            {'username': [f'Неправильное имя пользователя: {username}'],
-             'email': [f'или формат почтового адреса: {email}']},
-            status=status.HTTP_400_BAD_REQUEST
-    )
     if not User.objects.filter(username=username).exists():
-        serializer = SignUpSerializers(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            send_confirmation_code_to_email(username)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-    user = get_object_or_404(User, username=username)
-    serializer = SignUpSerializers(user, data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        if user.email != serializer.validated_data['email']:
-            return Response(
-                {'error': f'Для пользователя {username} указана неправильная почта'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         send_confirmation_code_to_email(username)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    user = get_object_or_404(User, username=username)
+    email = request.data.get('email')
+    if user.email != email:
+        return Response(
+            {'error': f'Для пользователя {username} указана неправильная почта'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    send_confirmation_code_to_email(username)
+    return Response({}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -75,9 +51,38 @@ def get_token(request):
     )
 
 
-def blank_url(request):
-    return HttpResponse('<h1>Заглушка</h1>')
+@api_view(['POST'])
+def create_user_by_admin(request):
+    a = 1
+    return HttpResponse('<h1>Создание пользователя администратором</h1>')
 
 
-def profile(request):
-    return HttpResponse('<h1>Профиль пользователя</h1>')
+@api_view(['POST'])
+def update_user_profile(request):
+    return HttpResponse('<h1>Обновление данных профиля</h1>')
+
+
+class UsersViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    #permission_classes = (IsAdminOrStaff,)
+    # filter_backends = (filters.SearchFilter,)
+    search_fields = ('=username',)
+    lookup_field = 'username'
+    http_method_names = ('get', 'post', 'patch', 'delete',)
+
+    @action(
+        methods=('get', 'patch',),
+        detail=False,
+        permission_classes=(IsAuthenticated,),
+    )
+    def me(self, request):
+        if request.method == 'PATCH':
+            serializer = UserSerializer(
+                request.user, data=request.data, partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save(role=request.user.role)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
