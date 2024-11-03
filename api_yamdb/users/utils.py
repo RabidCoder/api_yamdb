@@ -9,9 +9,10 @@ User = get_user_model()
 
 def send_confirmation_code_to_email(username):
     user = get_object_or_404(User, username=username)
-    confirmation_code = ''.join([
-        str(randint(0, 9)) for _ in range(CONFIRMATION_CODE_LENGTH)
-    ])
+    # confirmation_code = ''.join([
+    #     str(randint(0, 9)) for _ in range(CONFIRMATION_CODE_LENGTH)
+    # ])
+    confirmation_code = '0'
     send_mail(
         subject='Код подтверждения для регистрации в проекте Yamdb',
         message=f'Для получения JWT-токена используйте код {confirmation_code}',

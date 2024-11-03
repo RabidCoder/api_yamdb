@@ -1,9 +1,13 @@
-ROLE_CHOICE = [('user', 'Пользователь'),
-               ('moderator', 'Модератор'),
-               ('admin', 'Администратор')
-               ]
+# ROLE_CHOICE = [('user', 'Пользователь'),
+#                ('moderator', 'Модератор'),
+#                ('admin', 'Администратор')
+#                ]
+USER = 'user'
+MODERATOR = 'moderator'
+ADMIN = 'admin'
 
-BAD_USER_NAMES = ['me']
+USERNAME_PATTERN = r'^[\w.@+-]+\Z'
+BAD_USERNAMES = ['me']
 
 CONFIRMATION_CODE_LENGTH = 6
 MAX_EMAIL_LENGTH = 254
