@@ -1,7 +1,7 @@
 import datetime
 
 from django.core.validators import (
-    MaxValueValidator, MinValueValidator, MaxLengthValidator
+    MaxLengthValidator, MaxValueValidator, MinValueValidator
 )
 from django.db import models
 
