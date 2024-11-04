@@ -66,7 +66,7 @@ def update_user_profile(request):
 
 class UsersViewSet(viewsets.ModelViewSet):
     http_method_names = ('get', 'post', 'patch', 'delete',)
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
     permission_classes = (IsAdminOrSuperuser,)
     filter_backends = (filters.SearchFilter,)
