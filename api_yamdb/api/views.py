@@ -1,47 +1,12 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
-from rest_framework.response import Response
 
 from api import serializers
 from api.filters import ReviewFilter, TitleFilter
-from api.permissions import AdminPermission, CustomPermission
+from api.mixins import BaseModelViewSet, NonPutModelViewSet
+from api.permissions import AdminPermission
 from reviews.models import Category, Genre, Review, Title
-
-
-class BaseModelViewSet(
-    mixins.ListModelMixin, mixins.CreateModelMixin,
-    mixins.DestroyModelMixin, viewsets.GenericViewSet
-):
-    """
-    Base viewset that provides common functionality
-    for category and genre viewsets.
-    """
-
-    permission_classes = (AdminPermission,)
-    filter_backends = [filters.SearchFilter]
-    search_fields = ('name',)
-    lookup_field = 'slug'
-
-
-class NonPutModelViewSet(viewsets.ModelViewSet):
-    """
-    A base viewset that extends ModelViewSet to customize the update method.
-    """
-
-    def update(self, request, *args, **kwargs):
-        """
-        Override the update method to block PUT requests.
-
-        Returns a 405 Method Not Allowed response for PUT requests.
-        """
-        if request.method == 'PUT':
-            return Response(
-                {'detail': 'Method "PUT" is not allowed.'},
-                status=status.HTTP_405_METHOD_NOT_ALLOWED
-            )
-        return super().update(request, *args, **kwargs)
 
 
 class CategoryViewSet(BaseModelViewSet):
@@ -85,7 +50,6 @@ class CommentViewSet(NonPutModelViewSet):
     """Viewset class related to Comments."""
 
     serializer_class = serializers.CommentSerializer
-    permission_classes = (CustomPermission,)
 
     def get_review(self):
         """Get the review object associated with the comment."""
@@ -106,7 +70,6 @@ class ReviewViewSet(NonPutModelViewSet):
     """Viewset class related to Reviews."""
 
     serializer_class = serializers.ReviewSerializer
-    permission_classes = (CustomPermission,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ReviewFilter
 
