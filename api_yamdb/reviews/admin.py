@@ -23,6 +23,7 @@ class ShortTextAdmin(BaseAdmin):
         return text[:length] + '...' if len(text) > length else text
 
     def get_short_text(self, obj):
+        """Returns an object's short text."""
         return self.short_text(obj, 'text')
 
     get_short_text.short_description = 'Text Preview'
@@ -30,6 +31,7 @@ class ShortTextAdmin(BaseAdmin):
 
 class CommentInline(admin.TabularInline):
     """Inline class for comments."""
+
     model = Comment
     extra = 1
 
@@ -43,6 +45,7 @@ class GenreInline(admin.TabularInline):
 
 class ReviewInline(admin.TabularInline):
     """Inline class for reviews."""
+
     model = Review
     extra = 1
 
