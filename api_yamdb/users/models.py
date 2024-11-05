@@ -1,18 +1,18 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .constants import (USER, MODERATOR, ADMIN,
-    CONFIRMATION_CODE_LENGTH, MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH
-)
+from .constants import (USER, MODERATOR, ADMIN, CONFIRMATION_CODE_LENGTH,
+                        MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH)
 ROLE_CHOICE = [(USER, 'Пользователь'),
                (MODERATOR, 'Модератор'),
                (ADMIN, 'Администратор')
                ]
 
+
 class CustomUser(AbstractUser):
     username = models.CharField(
-        max_length = MAX_USERNAME_LENGTH,
-        unique = True,
+        max_length=MAX_USERNAME_LENGTH,
+        unique=True,
     )
     email = models.EmailField(
         verbose_name='E-mail',
@@ -37,7 +37,6 @@ class CustomUser(AbstractUser):
         default=''
     )
 
-
     class Meta:
         verbose_name = 'пользователь'
         verbose_name_plural = 'Пользователи'
@@ -53,4 +52,3 @@ class CustomUser(AbstractUser):
 
     def is_admin(self):
         return self.role == 'admin'
-

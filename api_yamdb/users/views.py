@@ -1,17 +1,16 @@
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action, api_view
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .permissions import IsAdmin, IsAdminOrSuperuser
+from .permissions import IsAdminOrSuperuser
 from .serializers import SignUpSerializers, GetTokenSerializers, UserSerializer
 from .utils import send_confirmation_code_to_email
 
-User=get_user_model()
+User = get_user_model()
 
 
 @api_view(['POST'])
@@ -25,11 +24,11 @@ def signup(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     user = get_object_or_404(User, username=username)
-    serializer = SignUpSerializers(user, data=request.data, partial=True)  # partial!!!!!!!!!!!!!!!!!!!!!
+    serializer = SignUpSerializers(user, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)
     if user.email != serializer.validated_data['email']:
         return Response(
-            {'username': [f'Указана неправильная почта']},
+            {'username': ['Указана неправильная почта']},
             status=status.HTTP_400_BAD_REQUEST
         )
     send_confirmation_code_to_email(username)
@@ -40,7 +39,9 @@ def signup(request):
 def get_token(request):
     serializer = GetTokenSerializers(data=request.data)
     serializer.is_valid(raise_exception=True)
-    user = get_object_or_404(User, username=serializer.validated_data['username'])
+    user = get_object_or_404(User,
+                             username=serializer.validated_data['username']
+                             )
     confirmation_code = serializer.validated_data['confirmation_code']
     if user.confirmation_code == confirmation_code:
         return Response(
@@ -48,20 +49,9 @@ def get_token(request):
             status=status.HTTP_200_OK
         )
     return Response(
-        {'confirmation_code': [f'Проверочный код указан неправильно']},
+        {'confirmation_code': ['Проверочный код указан неправильно']},
         status=status.HTTP_400_BAD_REQUEST
     )
-
-
-@api_view(['POST'])
-def create_user_by_admin(request):
-    a = 1
-    return HttpResponse('<h1>Создание пользователя администратором</h1>')
-
-
-@api_view(['POST'])
-def update_user_profile(request):
-    return HttpResponse('<h1>Обновление данных профиля</h1>')
 
 
 class UsersViewSet(viewsets.ModelViewSet):

@@ -1,7 +1,3 @@
-# ROLE_CHOICE = [('user', 'Пользователь'),
-#                ('moderator', 'Модератор'),
-#                ('admin', 'Администратор')
-#                ]
 USER = 'user'
 MODERATOR = 'moderator'
 ADMIN = 'admin'
