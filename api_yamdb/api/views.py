@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
@@ -34,7 +35,9 @@ class GenreViewSet(BaseModelViewSet):
 class TitleViewSet(NonPutModelViewSet):
     """Viewset class related to Titles."""
 
-    queryset = Title.objects.all()
+    queryset = Title.objects.all() \
+        .annotate(rating=Avg('reviews__score')) \
+        .order_by('-year', 'category', 'name')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
     permission_classes = (AdminPermission,)
@@ -81,7 +84,7 @@ class ReviewViewSet(NonPutModelViewSet):
         """Save the review with the associated title and the current user."""
         title = self.get_title()
         user = self.request.user
-        if Review.objects.filter(title=title, author=user).exists():
+        if title.reviews.filter(author=user).exists():
             raise ValidationError(
                 f'You have already reviewed this title "{title.name}".'
             )

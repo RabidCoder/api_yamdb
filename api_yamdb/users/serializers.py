@@ -3,8 +3,9 @@ from re import fullmatch
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .constants import (BAD_USERNAMES, CONFIRMATION_CODE_LENGTH,
-                        MAX_USERNAME_LENGTH, USERNAME_PATTERN)
+from constants import (BAD_USERNAMES, USERNAME_PATTERN,
+                       MAX_USERNAME_LENGTH, MAX_CONFIRMATION_CODE_LENGTH)
+
 from .permissions import IsAdminOrSuperuser
 
 User = get_user_model()
@@ -27,7 +28,7 @@ class GetTokenSerializers(serializers.Serializer):
         required=True
     )
     confirmation_code = serializers.CharField(
-        max_length=CONFIRMATION_CODE_LENGTH,
+        max_length=MAX_CONFIRMATION_CODE_LENGTH,
         required=True
     )
 

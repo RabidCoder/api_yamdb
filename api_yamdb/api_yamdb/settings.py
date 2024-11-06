@@ -104,7 +104,6 @@ USE_TZ = True
 
 PAGINATION_ITEMS_PER_PAGE = 10
 
-
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'
@@ -128,3 +127,5 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'users.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+DOMAIN_NAME = 'yamdb.ru'
+ADMIN_EMAIL = 'admin@' + DOMAIN_NAME
