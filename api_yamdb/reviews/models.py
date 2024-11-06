@@ -5,14 +5,10 @@ from django.core.validators import (
 )
 from django.db import models
 
+from constants import (
+    NAME_MAX_LENGTH, SLUG_MAX_LENGTH, MIN_YEAR, MIN_SCORE, MAX_SCORE
+)
 from users.models import CustomUser
-
-
-NAME_MAX_LENGTH = 256
-SLUG_MAX_LENGTH = 50
-MIN_YEAR = -20000
-MIN_SCORE = 1
-MAX_SCORE = 10
 
 
 def current_year():
@@ -54,13 +50,14 @@ class Title(models.Model):
     """Model related to titles."""
 
     name = models.CharField(max_length=NAME_MAX_LENGTH)
-    year = models.IntegerField(
+    year = models.PositiveSmallIntegerField(
         validators=[
             MaxValueValidator(
                 current_year(), message='Year cannot be in the future.'
             ),
             MinValueValidator(MIN_YEAR)
-        ]
+        ],
+        db_index=True
     )
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(
