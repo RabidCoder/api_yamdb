@@ -1,5 +1,7 @@
 from rest_framework import permissions
 
+from users.constants import ADMIN, MODERATOR
+
 
 class AdminPermission(permissions.BasePermission):
     """
@@ -12,7 +14,7 @@ class AdminPermission(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         # Allow other methods only for authenticated users with 'admin' role
-        return request.user.is_authenticated and request.user.role == 'admin'
+        return request.user.is_authenticated and request.user.role == ADMIN
 
 
 class CustomPermission(permissions.BasePermission):
@@ -39,5 +41,5 @@ class CustomPermission(permissions.BasePermission):
         # Allow modifications for object author, moderators, and admins
         return (
             obj.author == request.user
-            or request.user.role in ('moderator', 'admin')
+            or request.user.role in (ADMIN, MODERATOR)
         )
