@@ -1,16 +1,17 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .constants import (USER, MODERATOR, ADMIN, CONFIRMATION_CODE_LENGTH,
-                        MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH)
-ROLE_CHOICE = [(USER, 'Пользователь'),
-               (MODERATOR, 'Модератор'),
-               (ADMIN, 'Администратор')
-               ]
+from constants import (USER, MODERATOR, ADMIN, MAX_CONFIRMATION_CODE_LENGTH,
+                       MAX_EMAIL_LENGTH, MAX_USERNAME_LENGTH)
 
 
 class CustomUser(AbstractUser):
+    ROLE_CHOICE = [(USER, 'Пользователь'),
+                   (MODERATOR, 'Модератор'),
+                   (ADMIN, 'Администратор')
+                   ]
     username = models.CharField(
+        verbose_name='Имя пользователя',
         max_length=MAX_USERNAME_LENGTH,
         unique=True,
     )
@@ -29,7 +30,7 @@ class CustomUser(AbstractUser):
     confirmation_code = models.CharField(
         verbose_name='Проверочный код',
         blank=True,
-        max_length=CONFIRMATION_CODE_LENGTH
+        max_length=MAX_CONFIRMATION_CODE_LENGTH
     )
     bio = models.TextField(
         blank=True,
@@ -38,6 +39,7 @@ class CustomUser(AbstractUser):
     )
 
     class Meta:
+        ordering = ['username']
         verbose_name = 'пользователь'
         verbose_name_plural = 'Пользователи'
         constraints = (
@@ -51,4 +53,4 @@ class CustomUser(AbstractUser):
         return self.username
 
     def is_admin(self):
-        return self.role == 'admin'
+        return self.role == ADMIN
