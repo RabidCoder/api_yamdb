@@ -82,7 +82,7 @@ class ReviewViewSet(NonPutModelViewSet):
         """Save the review with the associated title and the current user."""
         title = self.get_title()
         user = self.request.user
-        if Review.objects.filter(title=title, author=user).exists():
+        if title.reviews.filter(author=user).exists():
             raise ValidationError(
                 f'You have already reviewed this title "{title.name}".'
             )
