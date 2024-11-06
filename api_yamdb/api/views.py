@@ -35,7 +35,9 @@ class GenreViewSet(BaseModelViewSet):
 class TitleViewSet(NonPutModelViewSet):
     """Viewset class related to Titles."""
 
-    queryset = Title.objects.all().annotate(rating=Avg('reviews__score')).order_by('-year', 'category', 'name')
+    queryset = Title.objects.all() \
+        .annotate(rating=Avg('reviews__score')) \
+        .order_by('-year', 'category', 'name')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
     permission_classes = (AdminPermission,)
