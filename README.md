@@ -91,5 +91,5 @@ python3 cleardb.py
  
  Александр Ролдугин (alexander@roldug.in)
  
- Владислав Васильев ()
+ Владислав Васильев (vladen21@yandex.ru)
  
