@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from users.constants import ADMIN, MODERATOR
+from constants import ADMIN, MODERATOR
 
 
 class AdminPermission(permissions.BasePermission):
