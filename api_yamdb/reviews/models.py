@@ -6,7 +6,8 @@ from django.core.validators import (
 from django.db import models
 
 from constants import (
-    NAME_MAX_LENGTH, SLUG_MAX_LENGTH, MIN_YEAR, MIN_SCORE, MAX_SCORE
+    NAME_MAX_LENGTH, SLUG_MAX_LENGTH, MIN_YEAR, MIN_SCORE,
+    MAX_SCORE, MAX_DISPLAYED_TEXT_LENGTH, MAX_TEXT_LENGTH
 )
 from users.models import CustomUser
 
@@ -109,9 +110,10 @@ class Review(models.Model):
         verbose_name='Автор отзыва'
     )
     text = models.TextField(
-        validators=[MaxLengthValidator(500)], verbose_name='Текст отзыва'
+        validators=[MaxLengthValidator(MAX_TEXT_LENGTH)],
+        verbose_name='Текст отзыва'
     )
-    score = models.IntegerField(
+    score = models.PositiveSmallIntegerField(
         validators=[
             MaxValueValidator(MAX_SCORE),
             MinValueValidator(MIN_SCORE)
@@ -144,7 +146,8 @@ class Comment(models.Model):
         verbose_name='Автор комментария'
     )
     text = models.TextField(
-        validators=[MaxLengthValidator(500)], verbose_name='Текст комментария'
+        validators=[MaxLengthValidator(MAX_TEXT_LENGTH)],
+        verbose_name='Текст комментария'
     )
     pub_date = models.DateTimeField(
         auto_now_add=True, db_index=True, verbose_name='Дата публикации'
@@ -158,5 +161,5 @@ class Comment(models.Model):
     def __str__(self):
         return (
             f'Comment by {self.author} on review {self.review}: '
-            f'{self.text[:20]}...'
+            f'{self.text[:MAX_DISPLAYED_TEXT_LENGTH]}...'
         )
